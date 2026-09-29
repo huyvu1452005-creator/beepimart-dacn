@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi Tiết Đơn Hàng - BeePiMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f8fa;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #2c3e50;
+    font-size: 15px;
+}
+
+.container { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+.header-wrapper {
+    background: linear-gradient(135deg, #008543, #00b35c);
+    padding: 14px 0;
+}
+.header-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-brand {
+    font-size: 25px;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+}
+.navbar-brand span { color: #FFB800; }
+
+.btn {
+    padding: 9px 20px;
+    border-radius: 22px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    display: inline-block;
+}
+.btn-success { background: #008543; color: #fff; }
+.btn-light { background: rgba(255, 255, 255, 0.2); color: #fff; border: 2px solid rgba(255, 255, 255, 0.4); }
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 16px;
+    font-size: 14px;
+    color: #64748b;
+}
+.breadcrumb a { color: #008543; text-decoration: none; font-weight: 600; }
+
+.card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid #e8ecf0;
+    margin-bottom: 20px;
+}
+.card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f4f8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+.order-id {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1e293b;
+}
+.order-id small {
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    display: block;
+    margin-top: 2px;
+}
+
+.badge {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+.info-item {
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+.info-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+.info-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    word-break: break-word;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+.order-item:last-child { border-bottom: none; }
+
+.item-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    font-size: 30px;
+    color: #cbd5e1;
+}
+.item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+}
+
+.item-info { flex: 1; }
+.item-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.item-meta {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.item-meta b { color: #475569; }
+
+.item-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ee4d2d;
+    white-space: nowrap;
+}
+
+.total-box {
+    background: linear-gradient(135deg, #f0f9f4, #dcfce7);
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 18px;
+}
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+    color: #475569;
+}
+.total-row.grand {
+    border-top: 2px dashed #86efac;
+    margin-top: 10px;
+    padding-top: 14px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #008543;
+}
+
+.tag-fragile {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: #94a3b8;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f1f5f9;
+    border-top-color: #008543;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header-wrapper">
+    <div class="header-container">
+        <a href="index.html" class="navbar-brand"><span>BeePi</span>Mart</a>
+        <a href="profile.html" class="btn btn-light">Về Tài Khoản</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Trang chủ</a>
+        <span>/</span>
+        <a href="profile.html">Tài khoản</a>
+        <span>/</span>
+        <span id="bc-order">Chi tiết đơn hàng</span>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Đang tải...</p>
+    </div>
+
+    <div id="error" style="display:none; text-align:center; padding:80px 20px;">
+        <h2 style="font-size:20px; color:#1e293b; margin-bottom:12px;">Không tìm thấy đơn hàng</h2>
+        <p id="error-msg" style="color:#64748b; margin-bottom:20px;"></p>
+        <a href="profile.html" class="btn btn-success">Về tài khoản</a>
+    </div>
+
+    <div id="content" style="display:none;">
+        <div class="card">
+            <div class="order-header">
+                <div class="order-id">
+                    Đơn hàng #<span id="order-id">—</span>
+                    <small>Đặt lúc: <span id="order-date">—</span></small>
+                </div>
+                <div>
+                    <span class="badge" id="order-status">—</span>
+                    <span id="fragile-tag" style="margin-left:8px;"></span>
+                </div>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Người nhận</div>
+                    <div class="info-value" id="info-name">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Số điện thoại</div>
+                    <div class="info-value" id="info-phone">—</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Thanh toán</div>
+                    <div class="info-value" id="info-payment">—</div>
+                </div>
+                <div class="info-item" style="grid-column:1/-1;">
+                    <div class="info-label">Địa chỉ giao hàng</div>
+                    <div class="info-value" id="info-address">—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Danh Sách Sản Phẩm</div>
+            <div id="items-list"></div>
+
+            <div class="total-box">
+                <div class="total-row">
+                    <span>Tạm tính (<span id="total-qty">0</span> sản phẩm)</span>
+                    <span id="subtotal">0 đ</span>
+                </div>
+                <div class="total-row">
+                    <span>Phí vận chuyển</span>
+                    <span id="shipping">0 đ</span>
+                </div>
+                <div class="total-row grand">
+                    <span>Tổng cộng</span>
+                    <span id="grand-total">0 đ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = '/api';
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'login.html';
+
+function fmtMoney(n) { return Number(n || 0).toLocaleString('vi-VN') + ' đ'; }
+
+function parseAddr(raw) {
+    if (!raw) return { name: '', phone: '', address: '' };
+    const p = raw.split(' - ');
+    if (p.length >= 3) {
+        return { name: p[0], phone: p[1], address: p.slice(2).join(' - ') };
+    }
+    return { name: '', phone: '', address: raw };
+}
+
+async function loadOrder() {
+    const id = new URLSearchParams(location.search).get('id');
+    if (!id) return showError('Không có mã đơn');
+
+    document.getElementById('bc-order').textContent = `Đơn #${id}`;
+
+    try {
+        const res = await fetch(`${API_URL}/orders/${id}`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.status === 404) return showError('Đơn hàng không tồn tại');
+        if (!res.ok) return showError('Lỗi tải đơn hàng');
+
+        const json = await res.json();
+        const o = json.data || json;
+        render(o);
+    } catch (e) {
+        showError('Lỗi kết nối máy chủ');
+    }
+}
+
+function showError(msg) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error-msg').textContent = msg;
+}
+
+function render(o) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    document.getElementById('order-id').textContent = o.id;
+    document.getElementById('order-date').textContent = new Date(o.created_at).toLocaleString('vi-VN');
+
+    const colors = {
+        'Chờ xử lý': 'background:#fff7e6;color:#d46b08;',
+        'Đã xác nhận': 'background:#e0f2fe;color:#0369a1;',
+        'Chờ lấy hàng': 'background:#ede9fe;color:#7c3aed;',
+        'Đang giao': 'background:#e6f7ff;color:#096dd9;',
+        'Hoàn thành': 'background:#f0fdf4;color:#16a34a;',
+        'Đã hủy': 'background:#fef2f2;color:#dc2626;'
+    };
+
+    const sb = document.getElementById('order-status');
+    sb.style.cssText = colors[o.status] || 'background:#f1f5f9;color:#64748b;';
+    sb.textContent = o.status;
+
+    if (o.is_fragile) {
+        document.getElementById('fragile-tag').innerHTML = '<span class="tag-fragile">Hàng dễ vỡ</span>';
+    }
+
+    const info = parseAddr(o.shipping_address);
+    document.getElementById('info-name').textContent = info.name || '—';
+    document.getElementById('info-phone').textContent = info.phone || '—';
+    document.getElementById('info-address').textContent = info.address || '—';
+
+    const payLabel = o.payment_method || 'COD';
+    const paidStatus = o.is_paid ? 'Đã thanh toán' : 'Chưa thanh toán';
+    document.getElementById('info-payment').textContent = `${payLabel} - ${paidStatus}`;
+
+    let total = 0;
+    let qty = 0;
+
+    document.getElementById('items-list').innerHTML = (o.items || []).map(it => {
+        const lineTotal = Number(it.price) * it.quantity;
+        total += lineTotal;
+        qty += it.quantity;
+
+        return `
+            <div class="order-item">
+                <div class="item-thumb">
+                    ${it.image_url ? `<img src="${it.image_url}" onerror="this.style.display='none'">` : '🛍️'}
+                </div>
+                <div class="item-info">
+                    <div class="item-name">${it.name}</div>
+                    <div class="item-meta">
+                        <span>Đơn giá: <b>${fmtMoney(it.price)}</b></span>
+                        <span>Số lượng: <b>x${it.quantity}</b></span>
+                    </div>
+                </div>
+                <div class="item-price">${fmtMoney(lineTotal)}</div>
+            </div>
+        `;
+    }).join('');
+
+    const grand = Number(o.total_amount);
+    const shipping = Math.max(0, grand - total);
+
+    document.getElementById('total-qty').textContent = qty;
+    document.getElementById('subtotal').textContent = fmtMoney(total);
+    document.getElementById('shipping').textContent = shipping === 0 ? 'Miễn phí' : fmtMoney(shipping);
+    document.getElementById('grand-total').textContent = fmtMoney(grand);
+}
+
+window.onload = loadOrder;
+</script>
+</body>
+</html>

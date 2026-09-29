@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản Trị Hệ Thống - BeePiMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f7f8fa;
+    color: #2c3e50;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+/* HEADER */
+.header-wrapper {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+.navbar-brand {
+    font-size: 24px;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+}
+.navbar-brand span { color: #FFB800; }
+
+.admin-badge {
+    display: inline-block;
+    background: #FFB800;
+    color: #1e293b;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.user-info { color: #fff; font-size: 14px; }
+.user-info b { color: #FFB800; }
+
+/* BUTTONS */
+.btn {
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-block;
+}
+.btn-warning { background: #FFB800; color: #fff; }
+.btn-warning:hover { background: #e6a600; }
+.btn-danger { background: #ff4d4f; color: #fff; }
+.btn-danger:hover { background: #e63e40; }
+.btn-success { background: #008543; color: #fff; }
+.btn-success:hover { background: #006b36; }
+.btn-primary { background: #3b82f6; color: #fff; }
+.btn-primary:hover { background: #2563eb; }
+.btn-secondary { background: #f1f5f9; color: #475569; }
+.btn-secondary:hover { background: #e2e8f0; }
+.btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 8px; }
+
+/* MAIN TABS - 6 tab chính */
+.main-tabs {
+    display: flex;
+    list-style: none;
+    background: #1e293b;
+    padding: 6px;
+    border-radius: 14px;
+    margin: 22px 0;
+    gap: 4px;
+    overflow-x: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.main-tab {
+    padding: 12px 22px;
+    border: none;
+    background: none;
+    color: #cbd5e1;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+.main-tab:hover { background: #334155; color: #fff; }
+.main-tab.active { background: #FFB800; color: #1e293b; }
+
+/* SUB TABS */
+.sub-tabs {
+    display: flex;
+    background: #fff;
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid #e8ecf0;
+    gap: 4px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+.sub-tab {
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    color: #64748b;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.sub-tab:hover { background: #f1f5f9; color: #3b82f6; }
+.sub-tab.active { background: #3b82f6; color: #fff; }
+
+.main-pane { display: none; }
+.main-pane.active { display: block; }
+.sub-pane { display: none; }
+.sub-pane.active { display: block; }
+
+/* STATS CARDS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+.stat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #e8ecf0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    min-width: 0;
+}
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.stat-icon.green { background: #dcfce7; }
+.stat-icon.orange { background: #fef3c7; }
+.stat-icon.blue { background: #dbeafe; }
+.stat-icon.purple { background: #ede9fe; }
+.stat-icon.red { background: #fee2e2; }
+
+.stat-info {
+    flex: 1;
+    min-width: 0;
+}
+.stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.2;
+    word-break: break-word;
+}
+.stat-label {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* CARD */
+.card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    border: 1px solid #e8ecf0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    margin-bottom: 20px;
+}
+.card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13.5px;
+    vertical-align: middle;
+}
+.table th {
+    background: #f8fafc;
+    font-weight: 700;
+    color: #475569;
+    font-size: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.table tr:hover td { background: #fafbfc; }
+
+.product-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #cbd5e1;
+}
+.slider-thumb {
+    width: 120px;
+    height: 68px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    object-fit: cover;
+}
+.badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    display: inline-block;
+    white-space: nowrap;
+}
+.text-center { text-align: center; }
+.tag-fragile {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.points-badge {
+    display: inline-block;
+    background: #fef3c7;
+    color: #d97706;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 12.5px;
+}
+
+/* CHART */
+.chart-bar-container { margin-bottom: 12px; }
+.chart-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+    color: #475569;
+}
+.chart-bar {
+    height: 24px;
+    background: #f1f5f9;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.chart-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #008543, #00b35c);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 40px;
+}
+
+/* TOP PRODUCTS RANKING */
+.rank-medal {
+    font-size: 26px;
+    line-height: 1;
+}
+.rank-number {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 14px;
+}
+.rank-row-1 { background: linear-gradient(90deg, #fffbeb, #fff); }
+.rank-row-2 { background: linear-gradient(90deg, #f8fafc, #fff); }
+.rank-row-3 { background: linear-gradient(90deg, #fef3c7, #fff); }
+
+.progress-bar-wrapper {
+    background: #f1f5f9;
+    height: 22px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s ease;
+}
+
+/* MODAL */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+.modal-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e8ecf0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+    border-radius: 18px 18px 0 0;
+}
+.modal-head h3 { font-size: 17px; font-weight: 700; }
+.modal-close {
+    background: #f1f5f9;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    color: #64748b;
+}
+.modal-body { padding: 20px 24px; }
+.modal-foot {
+    padding: 16px 24px;
+    border-top: 1px solid #e8ecf0;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    background: #fafbfc;
+    position: sticky;
+    bottom: 0;
+    border-radius: 0 0 18px 18px;
+}
+
+/* FORM */
+.form-group { margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+.form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fff;
+}
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: #3b82f6; }
+.form-textarea { resize: vertical; min-height: 70px; }
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+}
+.checkbox-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: #008543;
+    cursor: pointer;
+}
+.checkbox-row label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+}
+
+/* IMAGE UPLOADER */
+.image-uploader {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    background: #f8fafc;
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    overflow: hidden;
+}
+.image-uploader.has-image {
+    border-style: solid;
+    border-color: #008543;
+    background: #f0f9f4;
+    padding: 8px;
+}
+.image-uploader-icon { font-size: 38px; }
+.image-uploader-text { font-size: 13px; color: #64748b; font-weight: 500; }
+.image-uploader-hint { font-size: 11.5px; color: #94a3b8; }
+.image-uploader input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+.image-preview {
+    width: 100%;
+    max-width: 320px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+.slider-preview { max-width: 100%; height: 240px; }
+.remove-image-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+.upload-progress {
+    font-size: 12.5px;
+    color: #3b82f6;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+/* TOAST */
+.toast-container {
+    position: fixed;
+    top: 90px;
+    right: 26px;
+    z-index: 1100;
+}
+.toast {
+    background: #1e293b;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    min-width: 260px;
+    margin-bottom: 10px;
+}
+.toast.success { background: linear-gradient(135deg, #008543, #00b35c); }
+.toast.error { background: linear-gradient(135deg, #ef4444, #f87171); }
+
+@media (max-width: 768px) {
+    .header-container { flex-wrap: wrap; }
+    .form-row { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .toast-container { right: 12px; left: 12px; }
+    .toast { min-width: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="header-wrapper">
+    <div class="container header-container">
+        <a href="index.html" class="navbar-brand">
+            <span>BeePi</span>Mart <span class="admin-badge">ADMIN</span>
+        </a>
+        <div class="header-actions">
+            <span class="user-info">Xin chào, <b id="admin-name">Admin</b></span>
+            <a href="index.html" class="btn btn-warning">Về Cửa Hàng</a>
+            <button class="btn btn-danger" onclick="logout()">Thoát</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 6 TAB CHÍNH -->
+    <ul class="main-tabs">
+        <li><button class="main-tab active" onclick="switchMain('main-stats', this); loadStats();">📊 Thống Kê</button></li>
+        <li><button class="main-tab" onclick="switchMain('main-orders', this); loadOrders();">📦 Đơn Hàng</button></li>
+        <li><button class="main-tab" onclick="switchMain('main-products', this); loadProducts();">🛍️ Sản Phẩm</button></li>
+        <li><button class="main-tab" onclick="switchMain('main-shop', this); loadSliders();">🎁 Cửa Hàng</button></li>
+        <li><button class="main-tab" onclick="switchMain('main-users', this); loadUsers();">👤 Người Dùng</button></li>
+        <li><button class="main-tab" onclick="switchMain('main-shippers', this); loadShippers();">🚚 Quản Lý Shipper</button></li>
+    </ul>
+
+    <!-- TAB THỐNG KÊ -->
+    <div class="main-pane active" id="main-stats">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon green">📦</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="st-orders">0</div>
+                    <div class="stat-label">Tổng đơn hàng</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">💰</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="st-revenue">0 đ</div>
+                    <div class="stat-label">Doanh thu</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">🛍️</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="st-products">0</div>
+                    <div class="stat-label">Sản phẩm</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">👥</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="st-users">0</div>
+                    <div class="stat-label">Khách hàng</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">🚚</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="st-shippers">0</div>
+                    <div class="stat-label">Shipper</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">❌</div>
+                <div class="stat-info">
+                    <div class="stat-value" id="st-cancelled">0</div>
+                    <div class="stat-label">Đơn đã hủy</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchSub('sub-stats-status', this); loadOrdersByStatus();">📊 Đơn Theo Trạng Thái</button>
+            <button class="sub-tab" onclick="switchSub('sub-stats-top', this); loadTopProducts();">🏆 Top Sản Phẩm Bán Chạy</button>
+        </div>
+
+        <div class="sub-pane active" id="sub-stats-status">
+            <div class="card">
+                <div class="card-title">Biểu Đồ Đơn Hàng Theo Trạng Thái</div>
+                <div id="status-chart"></div>
+            </div>
+        </div>
+
+        <div class="sub-pane" id="sub-stats-top">
+            <div class="card">
+                <div class="card-title">
+                    <span>🏆 Bảng Xếp Hạng Top 10 Sản Phẩm Bán Chạy Nhất</span>
+                    <button class="btn btn-primary btn-sm" onclick="loadTopProducts()">Làm Mới</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;text-align:center;">Hạng</th>
+                                <th>Sản Phẩm</th>
+                                <th style="width:160px;">Đã Bán</th>
+                                <th style="width:240px;">Thanh Tiến Độ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stats-top-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB ĐƠN HÀNG -->
+    <div class="main-pane" id="main-orders">
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchSub('sub-orders-active', this); loadOrders();">Đang Xử Lý</button>
+            <button class="sub-tab" onclick="switchSub('sub-orders-cancelled', this); loadCancelledOrders();">Lịch Sử Hủy</button>
+        </div>
+
+        <div class="sub-pane active" id="sub-orders-active">
+            <div class="card">
+                <div class="card-title">
+                    <span>Danh Sách Đơn Hàng</span>
+                    <button class="btn btn-primary btn-sm" onclick="loadOrders()">Làm Mới</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Mã</th><th>Khách</th><th>Thời gian</th><th>Sản phẩm</th>
+                                <th>Shipper</th><th>Tổng tiền</th><th>Trạng thái</th><th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-pane" id="sub-orders-cancelled">
+            <div class="card">
+                <div class="card-title">
+                    <span>Lịch Sử Đơn Hàng Đã Hủy</span>
+                    <button class="btn btn-primary btn-sm" onclick="loadCancelledOrders()">Làm Mới</button>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Mã</th><th>Khách</th><th>Sản phẩm</th><th>Tổng tiền</th><th>Lý do hủy</th><th>Hủy lúc</th></tr>
+                        </thead>
+                        <tbody id="cancelled-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB SẢN PHẨM -->
+    <div class="main-pane" id="main-products">
+        <div class="card">
+            <div class="card-title">
+                <span>Danh Sách Sản Phẩm</span>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-success btn-sm" onclick="openProductModal()">Thêm Sản Phẩm</button>
+                    <button class="btn btn-primary btn-sm" onclick="loadProducts()">Làm Mới</button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th><th>ID</th><th>Tên</th><th>Danh mục</th>
+                            <th>Giá</th><th>Kho</th><th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB CỬA HÀNG (SLIDER) -->
+    <div class="main-pane" id="main-shop">
+        <div class="card">
+            <div class="card-title">
+                <span>Chương Trình Khuyến Mãi</span>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn btn-success btn-sm" onclick="openSliderModal()">Thêm Chương Trình</button>
+                    <button class="btn btn-primary btn-sm" onclick="loadSliders()">Làm Mới</button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th><th>Tiêu đề</th><th>Tag</th>
+                            <th>Thứ tự</th><th>Trạng thái</th><th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sliders-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB NGƯỜI DÙNG -->
+    <div class="main-pane" id="main-users">
+        <div class="card">
+            <div class="card-title">
+                <span>👤 Danh Sách Khách Hàng</span>
+                <button class="btn btn-primary btn-sm" onclick="loadUsers()">Làm Mới</button>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Username</th><th>Email</th><th>Vai trò</th>
+                            <th>Họ tên</th><th>SĐT</th><th>Ngày tạo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB QUẢN LÝ SHIPPER -->
+    <div class="main-pane" id="main-shippers">
+        <div class="card">
+            <div class="card-title">
+                <span>🚚 Danh Sách Shipper</span>
+                <button class="btn btn-primary btn-sm" onclick="loadShippers()">Làm Mới</button>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Họ tên</th><th>SĐT</th><th>Phương tiện</th>
+                            <th>Khu vực</th><th>Đang giao</th><th>Đã giao</th><th>Điểm tích lũy</th><th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shippers-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SẢN PHẨM -->
+<div class="modal-overlay" id="product-modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="product-modal-title">Thêm Sản Phẩm</h3>
+            <button class="modal-close" onclick="closeProductModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="p-id">
+            <div class="form-group">
+                <label class="form-label">Ảnh sản phẩm</label>
+                <div class="image-uploader" id="p-uploader">
+                    <input type="file" id="p-file" accept="image/*" onchange="handleProductImage(event)">
+                    <div id="p-placeholder">
+                        <div class="image-uploader-icon">📷</div>
+                        <div class="image-uploader-text">Bấm để chọn ảnh từ máy tính</div>
+                        <div class="image-uploader-hint">JPG, PNG, GIF, WEBP - Tối đa 5MB</div>
+                    </div>
+                    <img id="p-preview" class="image-preview" style="display:none;">
+                    <button type="button" class="remove-image-btn" id="p-remove" onclick="removeProductImage(event)" style="display:none;">×</button>
+                </div>
+                <div class="upload-progress" id="p-uploading" style="display:none;">Đang tải ảnh lên...</div>
+                <input type="hidden" id="p-url">
+                <div style="margin-top:8px;font-size:12px;color:#94a3b8;">Hoặc dán URL ảnh:</div>
+                <input type="text" class="form-input" id="p-image" placeholder="https://..." oninput="onProductUrl()" style="margin-top:4px;">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tên sản phẩm *</label>
+                <input type="text" class="form-input" id="p-name" placeholder="Ví dụ: Cà phê Sữa Đá">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Danh mục *</label>
+                    <select class="form-select" id="p-category"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giá (VNĐ) *</label>
+                    <input type="number" class="form-input" id="p-price" placeholder="29000" min="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Tồn kho *</label>
+                    <input type="number" class="form-input" id="p-stock" placeholder="100" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả</label>
+                    <input type="text" class="form-input" id="p-desc" placeholder="Mô tả ngắn">
+                </div>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="p-fragile">
+                <label for="p-fragile">Sản phẩm dễ vỡ (cần giao cẩn thận)</label>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-secondary" onclick="closeProductModal()">Hủy</button>
+            <button class="btn btn-success" onclick="saveProduct()" id="btn-save-product">Lưu</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SLIDER -->
+<div class="modal-overlay" id="slider-modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="slider-modal-title">Thêm Chương Trình</h3>
+            <button class="modal-close" onclick="closeSliderModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="s-id">
+            <div class="form-group">
+                <label class="form-label">Ảnh banner *</label>
+                <div class="image-uploader" id="s-uploader">
+                    <input type="file" id="s-file" accept="image/*" onchange="handleSliderImage(event)">
+                    <div id="s-placeholder">
+                        <div class="image-uploader-icon">🖼️</div>
+                        <div class="image-uploader-text">Bấm để chọn ảnh banner</div>
+                        <div class="image-uploader-hint">Khuyến nghị 1920x600px</div>
+                    </div>
+                    <img id="s-preview" class="image-preview slider-preview" style="display:none;">
+                    <button type="button" class="remove-image-btn" id="s-remove" onclick="removeSliderImage(event)" style="display:none;">×</button>
+                </div>
+                <div class="upload-progress" id="s-uploading" style="display:none;">Đang tải...</div>
+                <input type="hidden" id="s-url">
+                <div style="margin-top:8px;font-size:12px;color:#94a3b8;">Hoặc dán URL:</div>
+                <input type="text" class="form-input" id="s-image" placeholder="https://..." oninput="onSliderUrl()" style="margin-top:4px;">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tiêu đề *</label>
+                <input type="text" class="form-input" id="s-title" placeholder="Ví dụ: Giảm 30% Đồ Uống">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mô tả</label>
+                <textarea class="form-textarea" id="s-desc" placeholder="Mô tả ngắn..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Tag</label>
+                    <input type="text" class="form-input" id="s-tag" placeholder="KHUYẾN MÃI">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Text nút</label>
+                    <input type="text" class="form-input" id="s-button" placeholder="Mua Ngay">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Link</label>
+                    <input type="text" class="form-input" id="s-link" value="#">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Thứ tự</label>
+                    <input type="number" class="form-input" id="s-order" value="0" min="0">
+                </div>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="s-active" checked>
+                <label for="s-active">Hiển thị trên trang chủ</label>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn btn-secondary" onclick="closeSliderModal()">Hủy</button>
+            <button class="btn btn-success" onclick="saveSlider()" id="btn-save-slider">Lưu</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL LỊCH SỬ SHIPPER -->
+<div class="modal-overlay" id="shipper-history-modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="shipper-history-title">Lịch Sử Giao Hàng</h3>
+            <button class="modal-close" onclick="closeShipperHistory()">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr><th>Mã đơn</th><th>Ngày giao</th><th>Tổng</th><th>Điểm</th><th>Ghi chú</th></tr>
+                    </thead>
+                    <tbody id="shipper-history-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const API_URL = '/api';
+const token = localStorage.getItem('token');
+const role = localStorage.getItem('role');
+const username = localStorage.getItem('username');
+
+if (!token || role !== 'admin') {
+    alert('Cần đăng nhập với tài khoản admin');
+    window.location.href = 'login.html';
+}
+document.getElementById('admin-name').textContent = username || 'Admin';
+
+let allCategories = [];
+
+function toast(msg, type = 'success') {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+function authHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    };
+}
+
+function fmtMoney(n) { return Number(n || 0).toLocaleString('vi-VN') + ' đ'; }
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+}
+
+/* Chuyển tab chính */
+function switchMain(paneId, btn) {
+    document.querySelectorAll('.main-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.main-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById(paneId).classList.add('active');
+    btn.classList.add('active');
+}
+
+/* Chuyển tab con */
+function switchSub(paneId, btn) {
+    const parent = btn.closest('.main-pane');
+    parent.querySelectorAll('.sub-pane').forEach(el => el.classList.remove('active'));
+    parent.querySelectorAll('.sub-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById(paneId).classList.add('active');
+    btn.classList.add('active');
+}
+
+/* ============================================================
+   THỐNG KÊ
+   ============================================================ */
+async function loadStats() {
+    try {
+        const res = await fetch(`${API_URL}/admin/stats/overview`, { headers: authHeaders() });
+        const json = await res.json();
+        const d = json.data || json;
+        document.getElementById('st-orders').textContent = d.total_orders;
+        document.getElementById('st-revenue').textContent = fmtMoney(d.total_revenue);
+        document.getElementById('st-products').textContent = d.total_products;
+        document.getElementById('st-users').textContent = d.total_users;
+        document.getElementById('st-shippers').textContent = d.total_shippers;
+        document.getElementById('st-cancelled').textContent = d.total_cancelled;
+    } catch (e) { console.error(e); }
+}
+
+async function loadOrdersByStatus() {
+    const container = document.getElementById('status-chart');
+    container.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:40px;">Đang tải...</p>';
+
+    try {
+        const res = await fetch(`${API_URL}/admin/stats/orders-by-status`, { headers: authHeaders() });
+        const json = await res.json();
+        const data = json.data || json;
+        const total = data.reduce((s, r) => s + Number(r.count), 0);
+
+        if (total === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:40px;">Chưa có dữ liệu</p>';
+            return;
+        }
+
+        container.innerHTML = data.map(r => {
+            const pct = ((r.count / total) * 100).toFixed(1);
+            return `
+                <div class="chart-bar-container">
+                    <div class="chart-bar-label">
+                        <span><b>${r.status}</b></span>
+                        <span>${r.count} đơn (${pct}%)</span>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-bar-fill" style="width: ${pct}%;">${r.count}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (e) {
+        container.innerHTML = '<p style="text-align:center;color:#ef4444;">Lỗi tải dữ liệu</p>';
+    }
+}
+
+async function loadTopProducts() {
+    const tbody = document.getElementById('stats-top-body');
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding:40px;color:#94a3b8;">Đang tải...</td></tr>';
+
+    try {
+        const res = await fetch(`${API_URL}/admin/stats/top-products`, { headers: authHeaders() });
+        const json = await res.json();
+        const data = json.data || json;
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding:40px;color:#94a3b8;">Chưa có dữ liệu bán hàng</td></tr>';
+            return;
+        }
+
+        // Số lượng bán max để tính thanh tiến độ
+        const maxSold = Math.max(...data.map(p => Number(p.total_sold)));
+
+        // Huy chương cho top 3
+        const medals = ['🥇', '🥈', '🥉'];
+
+        tbody.innerHTML = data.slice(0, 10).map((p, i) => {
+            const sold = Number(p.total_sold);
+            const pct = maxSold > 0 ? (sold / maxSold) * 100 : 0;
+            const rank = i + 1;
+
+            // Huy chương top 3, số thứ tự cho còn lại
+            const rankDisplay = rank <= 3
+                ? `<span class="rank-medal">${medals[rank - 1]}</span>`
+                : `<span class="rank-number">${rank}</span>`;
+
+            // Màu thanh tiến độ theo hạng
+            let barColor;
+            if (rank === 1) barColor = 'linear-gradient(90deg, #FFB800, #ff9500)';
+            else if (rank === 2) barColor = 'linear-gradient(90deg, #94a3b8, #cbd5e1)';
+            else if (rank === 3) barColor = 'linear-gradient(90deg, #d97706, #f59e0b)';
+            else barColor = 'linear-gradient(90deg, #008543, #00b35c)';
+
+            const rowClass = rank === 1 ? 'rank-row-1' : rank === 2 ? 'rank-row-2' : rank === 3 ? 'rank-row-3' : '';
+
+            return `
+                <tr class="${rowClass}">
+                    <td style="text-align:center;">${rankDisplay}</td>
+                    <td>
+                        <b style="color:#1e293b;font-size:14.5px;">${p.name}</b>
+                    </td>
+                    <td>
+                        <b style="color:#008543;font-size:17px;">${sold}</b>
+                        <span style="color:#94a3b8;font-size:12px;margin-left:4px;">sản phẩm</span>
+                    </td>
+                    <td>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-fill"
+                                 style="width:${pct}%; background:${barColor};">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        console.error(e);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center" style="padding:40px;color:#ef4444;">Lỗi tải dữ liệu</td></tr>';
+    }
+}
+
+/* ============================================================
+   ĐƠN HÀNG
+   ============================================================ */
+async function loadOrders() {
+    const tbody = document.getElementById('orders-body');
+    try {
+        const res = await fetch(`${API_URL}/admin/orders`, { headers: authHeaders() });
+        const json = await res.json();
+        const orders = json.data || json;
+
+        if (!orders || orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center" style="padding:40px;color:#94a3b8;">Chưa có đơn nào</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = orders.map(o => {
+            let itemsHtml = '—';
+            if (o.items && o.items.length > 0) {
+                itemsHtml = o.items.map(it =>
+                    `<div style="font-size:12px;">${it.name} x <b>${it.quantity}</b></div>`
+                ).join('');
+            }
+
+            const statusOptions = ['Chờ xử lý', 'Đã xác nhận', 'Chờ lấy hàng', 'Đang giao', 'Hoàn thành', 'Đã hủy'];
+
+            return `
+                <tr>
+                    <td><b>#${o.id}</b>${o.is_fragile ? ' <span class="tag-fragile">Dễ vỡ</span>' : ''}</td>
+                    <td><b>${o.username}</b></td>
+                    <td style="white-space:nowrap;font-size:12.5px;">${new Date(o.created_at).toLocaleString('vi-VN')}</td>
+                    <td>${itemsHtml}</td>
+                    <td>${o.shipper_name ? `<b>${o.shipper_name}</b>` : '<span style="color:#94a3b8;">Chưa gán</span>'}</td>
+                    <td style="color:#ee4d2d;font-weight:700;white-space:nowrap;">${fmtMoney(o.total_amount)}</td>
+                    <td>
+                        <select class="form-select" style="padding:5px 8px;font-size:12px;" onchange="updateStatus(${o.id}, this.value)">
+                            ${statusOptions.map(s => `<option value="${s}" ${s === o.status ? 'selected' : ''}>${s}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="cancelOrder(${o.id})">Hủy</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center" style="color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+async function updateStatus(id, status) {
+    try {
+        const res = await fetch(`${API_URL}/admin/orders/${id}/status`, {
+            method: 'PUT',
+            headers: authHeaders(),
+            body: JSON.stringify({ status })
+        });
+        if (res.ok) {
+            toast(`Đã cập nhật đơn #${id}`);
+            loadOrders();
+        } else {
+            toast('Lỗi cập nhật', 'error');
+        }
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    }
+}
+
+async function cancelOrder(id) {
+    const reason = prompt('Lý do hủy đơn:', 'Admin hủy');
+    if (reason === null) return;
+
+    try {
+        const res = await fetch(`${API_URL}/admin/orders/${id}/status`, {
+            method: 'PUT',
+            headers: authHeaders(),
+            body: JSON.stringify({ status: 'Đã hủy', reason: reason || 'Admin hủy' })
+        });
+        if (res.ok) {
+            toast('Đã hủy đơn');
+            loadOrders();
+        }
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    }
+}
+
+async function loadCancelledOrders() {
+    const tbody = document.getElementById('cancelled-body');
+    try {
+        const res = await fetch(`${API_URL}/admin/orders/cancelled`, { headers: authHeaders() });
+        const json = await res.json();
+        const orders = json.data || json;
+
+        if (!orders || orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:#94a3b8;">Chưa có đơn nào bị hủy</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = orders.map(o => {
+            let itemsHtml = '—';
+            if (o.items && o.items.length > 0) {
+                itemsHtml = o.items.map(it =>
+                    `<div style="font-size:12px;">${it.name} x${it.quantity}</div>`
+                ).join('');
+            }
+            return `
+                <tr>
+                    <td><b>#${o.id}</b></td>
+                    <td>${o.username}</td>
+                    <td>${itemsHtml}</td>
+                    <td style="color:#ee4d2d;font-weight:700;">${fmtMoney(o.total_amount)}</td>
+                    <td style="color:#dc2626;font-style:italic;">${o.cancel_reason || 'Không rõ'}</td>
+                    <td style="white-space:nowrap;font-size:12.5px;">${o.cancelled_at ? new Date(o.cancelled_at).toLocaleString('vi-VN') : '—'}</td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+/* ============================================================
+   SẢN PHẨM
+   ============================================================ */
+async function loadCategories() {
+    try {
+        const res = await fetch(`${API_URL}/categories`);
+        const json = await res.json();
+        allCategories = json.data || json;
+        document.getElementById('p-category').innerHTML = '<option value="">-- Chọn danh mục --</option>' +
+            allCategories.map(c => `<option value="${c.id}">${c.icon || ''} ${c.name}</option>`).join('');
+    } catch (e) { console.error(e); }
+}
+
+async function loadProducts() {
+    const tbody = document.getElementById('products-body');
+    try {
+        const res = await fetch(`${API_URL}/products`);
+        const json = await res.json();
+        const products = json.data || json;
+
+        tbody.innerHTML = products.map(p => {
+            const cat = allCategories.find(c => c.id === p.category_id);
+            const imgHtml = p.image_url
+                ? `<img src="${p.image_url}" class="product-thumb" onerror="this.style.visibility='hidden'">`
+                : `<div class="product-thumb">Ảnh</div>`;
+
+            return `
+                <tr>
+                    <td>${imgHtml}</td>
+                    <td>#${p.id}</td>
+                    <td><b>${p.name}</b>${p.is_fragile ? ' <span class="tag-fragile">Dễ vỡ</span>' : ''}</td>
+                    <td>${cat ? cat.name : '—'}</td>
+                    <td style="color:#ee4d2d;font-weight:700;">${fmtMoney(p.price)}</td>
+                    <td>${p.stock}</td>
+                    <td style="white-space:nowrap;">
+                        <button class="btn btn-primary btn-sm" onclick="editProduct(${p.id})">Sửa</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}')">Xóa</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+function handleProductImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { toast('Ảnh tối đa 5MB', 'error'); return; }
+    if (!/image\/(jpeg|jpg|png|gif|webp)/.test(file.type)) {
+        toast('Chỉ JPG, PNG, GIF, WEBP', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('p-preview').src = e.target.result;
+        document.getElementById('p-preview').style.display = 'block';
+        document.getElementById('p-placeholder').style.display = 'none';
+        document.getElementById('p-remove').style.display = 'flex';
+        document.getElementById('p-uploader').classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+
+    uploadProductImage(file);
+}
+
+async function uploadProductImage(file) {
+    const fd = new FormData();
+    fd.append('image', file);
+    document.getElementById('p-uploading').style.display = 'block';
+
+    try {
+        const res = await fetch(`${API_URL}/admin/upload`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: fd
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error);
+
+        const url = json.data?.url || json.url;
+        document.getElementById('p-url').value = url;
+        document.getElementById('p-image').value = url;
+        toast('Tải ảnh thành công');
+    } catch (e) {
+        toast('Lỗi upload ảnh', 'error');
+        removeProductImage();
+    } finally {
+        document.getElementById('p-uploading').style.display = 'none';
+    }
+}
+
+function removeProductImage(event) {
+    if (event) event.stopPropagation();
+    document.getElementById('p-file').value = '';
+    document.getElementById('p-url').value = '';
+    document.getElementById('p-image').value = '';
+    document.getElementById('p-preview').src = '';
+    document.getElementById('p-preview').style.display = 'none';
+    document.getElementById('p-placeholder').style.display = 'block';
+    document.getElementById('p-remove').style.display = 'none';
+    document.getElementById('p-uploader').classList.remove('has-image');
+}
+
+function onProductUrl() {
+    const url = document.getElementById('p-image').value.trim();
+    if (url) {
+        document.getElementById('p-url').value = url;
+        document.getElementById('p-preview').src = url;
+        document.getElementById('p-preview').style.display = 'block';
+        document.getElementById('p-placeholder').style.display = 'none';
+        document.getElementById('p-remove').style.display = 'flex';
+        document.getElementById('p-uploader').classList.add('has-image');
+    }
+}
+
+function openProductModal(p = null) {
+    document.getElementById('product-modal').classList.add('open');
+    document.getElementById('product-modal-title').textContent = p ? 'Sửa Sản Phẩm' : 'Thêm Sản Phẩm';
+    removeProductImage();
+
+    document.getElementById('p-id').value = p ? p.id : '';
+    document.getElementById('p-name').value = p ? p.name : '';
+    document.getElementById('p-category').value = p ? (p.category_id || '') : '';
+    document.getElementById('p-price').value = p ? p.price : '';
+    document.getElementById('p-stock').value = p ? p.stock : '';
+    document.getElementById('p-desc').value = p ? (p.description || '') : '';
+    document.getElementById('p-fragile').checked = p ? p.is_fragile : false;
+    document.getElementById('p-image').value = p ? (p.image_url || '') : '';
+
+    if (p && p.image_url) {
+        document.getElementById('p-url').value = p.image_url;
+        document.getElementById('p-preview').src = p.image_url;
+        document.getElementById('p-preview').style.display = 'block';
+        document.getElementById('p-placeholder').style.display = 'none';
+        document.getElementById('p-remove').style.display = 'flex';
+        document.getElementById('p-uploader').classList.add('has-image');
+    }
+}
+
+function closeProductModal() {
+    document.getElementById('product-modal').classList.remove('open');
+}
+
+async function editProduct(id) {
+    try {
+        const res = await fetch(`${API_URL}/products/${id}`);
+        const json = await res.json();
+        openProductModal(json.data || json);
+    } catch (e) {
+        toast('Lỗi tải sản phẩm', 'error');
+    }
+}
+
+async function saveProduct() {
+    const id = document.getElementById('p-id').value;
+    const name = document.getElementById('p-name').value.trim();
+    const category_id = document.getElementById('p-category').value;
+    const price = document.getElementById('p-price').value;
+    const stock = document.getElementById('p-stock').value;
+    const description = document.getElementById('p-desc').value.trim();
+    const image_url = document.getElementById('p-url').value || document.getElementById('p-image').value.trim() || null;
+    const is_fragile = document.getElementById('p-fragile').checked;
+
+    if (!name) { toast('Vui lòng nhập tên sản phẩm', 'error'); return; }
+    if (!category_id) { toast('Vui lòng chọn danh mục', 'error'); return; }
+    if (!price || Number(price) < 0) { toast('Giá không hợp lệ', 'error'); return; }
+    if (!stock || Number(stock) < 0) { toast('Kho không hợp lệ', 'error'); return; }
+
+    const body = {
+        name,
+        category_id: Number(category_id),
+        price: Number(price),
+        stock: Number(stock),
+        description,
+        image_url,
+        is_fragile
+    };
+
+    const url = id ? `${API_URL}/admin/products/${id}` : `${API_URL}/admin/products`;
+    const method = id ? 'PUT' : 'POST';
+    const btn = document.getElementById('btn-save-product');
+    btn.disabled = true;
+    btn.textContent = 'Đang lưu...';
+
+    try {
+        const res = await fetch(url, {
+            method,
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (!res.ok) {
+            toast(json.error || 'Lỗi lưu', 'error');
+            return;
+        }
+        toast(id ? 'Cập nhật thành công' : 'Thêm sản phẩm thành công');
+        closeProductModal();
+        loadProducts();
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Lưu';
+    }
+}
+
+async function deleteProduct(id, name) {
+    if (!confirm(`Xóa sản phẩm "${name}"?`)) return;
+    try {
+        const res = await fetch(`${API_URL}/admin/products/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
+        if (res.ok) {
+            toast('Đã xóa');
+            loadProducts();
+        } else {
+            toast('Lỗi xóa', 'error');
+        }
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    }
+}
+
+/* ============================================================
+   SLIDER
+   ============================================================ */
+async function loadSliders() {
+    const tbody = document.getElementById('sliders-body');
+    try {
+        const res = await fetch(`${API_URL}/admin/sliders`, { headers: authHeaders() });
+        const json = await res.json();
+        const sliders = json.data || json;
+
+        if (!sliders || sliders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding:40px;color:#94a3b8;">Chưa có chương trình nào</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = sliders.map(s => `
+            <tr>
+                <td><img src="${s.image_url}" class="slider-thumb" onerror="this.style.visibility='hidden'"></td>
+                <td><b>${s.title}</b></td>
+                <td>${s.tag_text || '—'}</td>
+                <td>${s.display_order}</td>
+                <td>${s.is_active
+                    ? '<span class="badge" style="background:#f0fdf4;color:#16a34a;">Hiện</span>'
+                    : '<span class="badge" style="background:#fef2f2;color:#dc2626;">Ẩn</span>'}</td>
+                <td style="white-space:nowrap;">
+                    <button class="btn btn-primary btn-sm" onclick="editSlider(${s.id})">Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSlider(${s.id}, '${s.title.replace(/'/g, "\\'")}')">Xóa</button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+function handleSliderImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { toast('Ảnh tối đa 5MB', 'error'); return; }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('s-preview').src = e.target.result;
+        document.getElementById('s-preview').style.display = 'block';
+        document.getElementById('s-placeholder').style.display = 'none';
+        document.getElementById('s-remove').style.display = 'flex';
+        document.getElementById('s-uploader').classList.add('has-image');
+    };
+    reader.readAsDataURL(file);
+
+    uploadSliderImage(file);
+}
+
+async function uploadSliderImage(file) {
+    const fd = new FormData();
+    fd.append('image', file);
+    document.getElementById('s-uploading').style.display = 'block';
+
+    try {
+        const res = await fetch(`${API_URL}/admin/upload`, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: fd
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error);
+
+        const url = json.data?.url || json.url;
+        document.getElementById('s-url').value = url;
+        document.getElementById('s-image').value = url;
+        toast('Tải ảnh banner thành công');
+    } catch (e) {
+        toast('Lỗi upload', 'error');
+        removeSliderImage();
+    } finally {
+        document.getElementById('s-uploading').style.display = 'none';
+    }
+}
+
+function removeSliderImage(event) {
+    if (event) event.stopPropagation();
+    document.getElementById('s-file').value = '';
+    document.getElementById('s-url').value = '';
+    document.getElementById('s-image').value = '';
+    document.getElementById('s-preview').src = '';
+    document.getElementById('s-preview').style.display = 'none';
+    document.getElementById('s-placeholder').style.display = 'block';
+    document.getElementById('s-remove').style.display = 'none';
+    document.getElementById('s-uploader').classList.remove('has-image');
+}
+
+function onSliderUrl() {
+    const url = document.getElementById('s-image').value.trim();
+    if (url) {
+        document.getElementById('s-url').value = url;
+        document.getElementById('s-preview').src = url;
+        document.getElementById('s-preview').style.display = 'block';
+        document.getElementById('s-placeholder').style.display = 'none';
+        document.getElementById('s-remove').style.display = 'flex';
+        document.getElementById('s-uploader').classList.add('has-image');
+    }
+}
+
+function openSliderModal(s = null) {
+    document.getElementById('slider-modal').classList.add('open');
+    document.getElementById('slider-modal-title').textContent = s ? 'Sửa Chương Trình' : 'Thêm Chương Trình';
+    removeSliderImage();
+
+    document.getElementById('s-id').value = s ? s.id : '';
+    document.getElementById('s-title').value = s ? s.title : '';
+    document.getElementById('s-desc').value = s ? (s.description || '') : '';
+    document.getElementById('s-tag').value = s ? (s.tag_text || '') : '';
+    document.getElementById('s-button').value = s ? (s.button_text || 'Xem Thêm') : 'Xem Thêm';
+    document.getElementById('s-link').value = s ? (s.link_url || '#') : '#';
+    document.getElementById('s-order').value = s ? s.display_order : 0;
+    document.getElementById('s-active').checked = s ? s.is_active : true;
+    document.getElementById('s-image').value = s ? (s.image_url || '') : '';
+
+    if (s && s.image_url) {
+        document.getElementById('s-url').value = s.image_url;
+        document.getElementById('s-preview').src = s.image_url;
+        document.getElementById('s-preview').style.display = 'block';
+        document.getElementById('s-placeholder').style.display = 'none';
+        document.getElementById('s-remove').style.display = 'flex';
+        document.getElementById('s-uploader').classList.add('has-image');
+    }
+}
+
+function closeSliderModal() {
+    document.getElementById('slider-modal').classList.remove('open');
+}
+
+async function editSlider(id) {
+    try {
+        const res = await fetch(`${API_URL}/admin/sliders`, { headers: authHeaders() });
+        const json = await res.json();
+        const list = json.data || json;
+        const s = list.find(x => x.id === id);
+        if (s) openSliderModal(s);
+    } catch (e) {
+        toast('Lỗi tải', 'error');
+    }
+}
+
+async function saveSlider() {
+    const id = document.getElementById('s-id').value;
+    const title = document.getElementById('s-title').value.trim();
+    const image_url = document.getElementById('s-url').value || document.getElementById('s-image').value.trim();
+
+    if (!title) { toast('Nhập tiêu đề', 'error'); return; }
+    if (!image_url) { toast('Chọn ảnh banner', 'error'); return; }
+
+    const body = {
+        title,
+        description: document.getElementById('s-desc').value.trim() || null,
+        image_url,
+        link_url: document.getElementById('s-link').value.trim() || '#',
+        button_text: document.getElementById('s-button').value.trim() || 'Xem Thêm',
+        tag_text: document.getElementById('s-tag').value.trim() || null,
+        display_order: Number(document.getElementById('s-order').value) || 0,
+        is_active: document.getElementById('s-active').checked
+    };
+
+    const url = id ? `${API_URL}/admin/sliders/${id}` : `${API_URL}/admin/sliders`;
+    const method = id ? 'PUT' : 'POST';
+    const btn = document.getElementById('btn-save-slider');
+    btn.disabled = true;
+    btn.textContent = 'Đang lưu...';
+
+    try {
+        const res = await fetch(url, {
+            method,
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+        });
+        const json = await res.json();
+        if (!res.ok) {
+            toast(json.error || 'Lỗi lưu', 'error');
+            return;
+        }
+        toast(id ? 'Cập nhật thành công' : 'Thêm thành công');
+        closeSliderModal();
+        loadSliders();
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Lưu';
+    }
+}
+
+async function deleteSlider(id, title) {
+    if (!confirm(`Xóa "${title}"?`)) return;
+    try {
+        const res = await fetch(`${API_URL}/admin/sliders/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
+        if (res.ok) {
+            toast('Đã xóa');
+            loadSliders();
+        }
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    }
+}
+
+/* ============================================================
+   NGƯỜI DÙNG (chỉ khách hàng)
+   ============================================================ */
+async function loadUsers() {
+    const tbody = document.getElementById('users-body');
+    try {
+        const res = await fetch(`${API_URL}/admin/users`, { headers: authHeaders() });
+        const json = await res.json();
+        const users = json.data || json;
+
+        const customers = users.filter(u => u.role === 'customer');
+
+        if (!customers || customers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding:40px;color:#94a3b8;">Chưa có khách hàng nào</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = customers.map(u => `
+            <tr>
+                <td>#${u.id}</td>
+                <td><b>${u.username}</b></td>
+                <td>${u.email}</td>
+                <td><span class="badge" style="background:#e0f2fe;color:#0369a1;">Khách hàng</span></td>
+                <td>${u.full_name || '—'}</td>
+                <td>${u.phone || '—'}</td>
+                <td style="white-space:nowrap;font-size:12.5px;">${new Date(u.created_at).toLocaleString('vi-VN')}</td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+/* ============================================================
+   SHIPPER
+   ============================================================ */
+async function loadShippers() {
+    const tbody = document.getElementById('shippers-body');
+    try {
+        const res = await fetch(`${API_URL}/admin/shippers`, { headers: authHeaders() });
+        const json = await res.json();
+        const list = json.data || json;
+
+        if (!list || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center" style="padding:40px;color:#94a3b8;">Chưa có shipper nào</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = list.map(s => `
+            <tr>
+                <td>#${s.id}</td>
+                <td><b>${s.full_name}</b><br><span style="font-size:12px;color:#94a3b8;">@${s.username}</span></td>
+                <td>${s.phone}</td>
+                <td>${s.vehicle || '—'}<br><span style="font-size:12px;color:#94a3b8;">${s.license_plate || ''}</span></td>
+                <td>${s.area || '—'}</td>
+                <td><b style="color:#3b82f6;">${s.delivering_count || 0}</b></td>
+                <td><b style="color:#16a34a;">${s.total_deliveries || 0}</b></td>
+                <td><span class="points-badge">${s.total_points || 0} điểm</span></td>
+                <td><button class="btn btn-primary btn-sm" onclick="openShipperHistory(${s.id}, '${s.full_name.replace(/'/g, "\\'")}')">Lịch sử</button></td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center" style="color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+async function openShipperHistory(id, name) {
+    document.getElementById('shipper-history-modal').classList.add('open');
+    document.getElementById('shipper-history-title').textContent = `Lịch Sử Giao Hàng - ${name}`;
+
+    const tbody = document.getElementById('shipper-history-body');
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;">Đang tải...</td></tr>';
+
+    try {
+        const res = await fetch(`${API_URL}/admin/shippers/${id}/history`, { headers: authHeaders() });
+        const json = await res.json();
+        const list = json.data || json;
+
+        if (!list || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">Chưa có lịch sử</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = list.map(h => `
+            <tr>
+                <td><b>#${h.order_id}</b></td>
+                <td style="white-space:nowrap;">${new Date(h.delivered_at).toLocaleString('vi-VN')}</td>
+                <td style="color:#ee4d2d;font-weight:700;">${fmtMoney(h.total_amount)}</td>
+                <td><span class="points-badge">+${h.points_earned}</span></td>
+                <td style="font-size:12.5px;color:#64748b;">${h.notes || '—'}</td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#ef4444;">Lỗi tải</td></tr>';
+    }
+}
+
+function closeShipperHistory() {
+    document.getElementById('shipper-history-modal').classList.remove('open');
+}
+
+/* ============================================================
+   KHỞI ĐỘNG
+   ============================================================ */
+window.onload = async function () {
+    await loadCategories();
+    loadStats();
+    loadOrdersByStatus();
+    loadOrders();
+    loadProducts();
+    loadSliders();
+    loadUsers();
+    loadShippers();
+};
+</script>
+</body>
+</html>

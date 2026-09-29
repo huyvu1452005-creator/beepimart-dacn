@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng Ký - BeePiMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: linear-gradient(135deg, #008543 0%, #00b35c 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.register-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+.brand { text-align: center; margin-bottom: 24px; }
+.brand-logo {
+    font-size: 32px;
+    font-weight: 800;
+    color: #008543;
+    text-decoration: none;
+}
+.brand-logo span { color: #FFB800; }
+.brand-sub { font-size: 14px; color: #64748b; margin-top: 8px; }
+
+.form-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+/* Wrapper cho input password + nút con mắt */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.form-input {
+    width: 100%;
+    padding: 13px 50px 13px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: all 0.2s;
+}
+.form-input:focus {
+    border-color: #008543;
+    box-shadow: 0 0 0 4px rgba(0, 133, 67, 0.12);
+}
+
+/* Nút con mắt */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    transition: color 0.2s;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+}
+.toggle-password:hover {
+    color: #008543;
+    background: #f0f9f4;
+}
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #008543, #00b35c);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+}
+.btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #64748b;
+}
+.form-footer a {
+    color: #008543;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1100;
+}
+.toast {
+    background: #1e293b;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    min-width: 260px;
+    margin-bottom: 10px;
+}
+.toast.success { background: linear-gradient(135deg, #008543, #00b35c); }
+.toast.error { background: linear-gradient(135deg, #ef4444, #f87171); }
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toast-container"></div>
+
+<div class="register-card">
+    <div class="brand">
+        <a href="index.html" class="brand-logo"><span>BeePi</span>Mart</a>
+        <p class="brand-sub">Đăng ký tài khoản mới</p>
+    </div>
+
+    <h1 class="form-title">Đăng Ký</h1>
+
+    <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+            <label class="form-label">Tên đăng nhập *</label>
+            <input type="text" class="form-input" id="username" placeholder="Ít nhất 4 ký tự" required minlength="4" style="padding-right: 16px;">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-input" id="email" placeholder="example@gmail.com" required style="padding-right: 16px;">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Mật khẩu *</label>
+            <div class="password-wrapper">
+                <input type="password" class="form-input" id="password" placeholder="Ít nhất 6 ký tự" required minlength="6">
+                <button type="button" class="toggle-password" onclick="togglePassword('password', this)" aria-label="Hiện/ẩn mật khẩu">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Xác nhận mật khẩu *</label>
+            <div class="password-wrapper">
+                <input type="password" class="form-input" id="password2" placeholder="Nhập lại mật khẩu" required minlength="6">
+                <button type="button" class="toggle-password" onclick="togglePassword('password2', this)" aria-label="Hiện/ẩn mật khẩu">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-register">Đăng Ký</button>
+    </form>
+
+    <div class="form-footer">
+        Đã có tài khoản? <a href="login.html">Đăng nhập</a>
+    </div>
+</div>
+
+<script>
+const API_URL = '/api';
+
+/**
+ * Bật/tắt hiển thị mật khẩu
+ */
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        // Icon con mắt gạch chéo (đang hiện mật khẩu)
+        btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            </svg>
+        `;
+    } else {
+        input.type = 'password';
+        // Icon con mắt mở (đang ẩn mật khẩu)
+        btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+        `;
+    }
+}
+
+function toast(msg, type = 'success') {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-register');
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+
+    if (!/^[a-zA-Z0-9_]{4,}$/.test(username)) {
+        toast('Username chỉ chứa chữ, số, gạch dưới từ 4 ký tự', 'error');
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        toast('Email không hợp lệ', 'error');
+        return;
+    }
+    if (password !== password2) {
+        toast('Mật khẩu xác nhận không khớp', 'error');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Đang xử lý...';
+
+    try {
+        const res = await fetch(`${API_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+            toast(json.error || 'Đăng ký thất bại', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Đăng Ký';
+            return;
+        }
+
+        toast('Đăng ký thành công! Đang chuyển trang đăng nhập');
+        setTimeout(() => window.location.href = 'login.html', 1200);
+    } catch (err) {
+        console.error(err);
+        toast('Lỗi kết nối máy chủ', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Đăng Ký';
+    }
+}
+</script>
+</body>
+</html>

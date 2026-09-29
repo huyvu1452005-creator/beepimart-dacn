@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipper Panel - BeePiMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f7f8fa;
+    color: #2c3e50;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* HEADER */
+.header-wrapper {
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+.navbar-brand {
+    font-size: 24px;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+}
+.navbar-brand span { color: #FFB800; }
+
+.shipper-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.user-info { color: #fff; font-size: 14px; }
+.user-info b { color: #FFB800; }
+
+.btn {
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+.btn-danger { background: #ef4444; color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: #008543; color: #fff; }
+.btn-success:hover { background: #006b36; }
+.btn-orange { background: #f97316; color: #fff; }
+.btn-orange:hover { background: #ea580c; }
+.btn-lg { padding: 12px 20px; font-size: 14px; border-radius: 10px; }
+
+/* STATS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #e8ecf0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+.stat-icon.orange { background: #ffedd5; }
+.stat-icon.blue { background: #dbeafe; }
+.stat-icon.green { background: #dcfce7; }
+.stat-icon.purple { background: #ede9fe; }
+
+.stat-value { font-size: 24px; font-weight: 800; color: #1e293b; }
+.stat-label { font-size: 13px; color: #64748b; }
+
+/* TABS */
+.nav-tabs {
+    display: flex;
+    background: #fff;
+    padding: 6px;
+    border-radius: 14px;
+    margin: 22px 0;
+    border: 1px solid #e8ecf0;
+    gap: 6px;
+    overflow-x: auto;
+}
+.nav-link {
+    padding: 12px 24px;
+    border: none;
+    background: none;
+    color: #64748b;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+.nav-link:hover { background: #f1f5f9; }
+.nav-link.active { background: #f97316; color: #fff; }
+
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ORDER CARDS */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.order-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    border: 1px solid #e8ecf0;
+    position: relative;
+}
+.order-card:hover {
+    border-color: #f97316;
+    box-shadow: 0 8px 24px rgba(249, 115, 22, 0.15);
+}
+.order-card.fragile {
+    border-left: 4px solid #ef4444;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.order-id { font-size: 17px; font-weight: 800; color: #1e293b; }
+.order-time { font-size: 12px; color: #94a3b8; }
+
+.tag-fragile {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border: 1px solid #fecaca;
+}
+.tag-paid {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f0fdf4;
+    color: #16a34a;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+.tag-unpaid {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff7e6;
+    color: #d46b08;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.order-info-line {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 13.5px;
+    align-items: flex-start;
+}
+.order-info-icon { font-size: 16px; flex-shrink: 0; }
+.order-info-text { flex: 1; color: #475569; word-break: break-word; }
+.order-info-text b { color: #1e293b; }
+
+.order-total {
+    background: #f0f9f4;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.order-total-label { font-size: 13px; color: #64748b; }
+.order-total-value { font-size: 18px; font-weight: 800; color: #ee4d2d; }
+
+.order-items {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+    color: #475569;
+}
+.order-items div { padding: 2px 0; }
+
+.order-actions { display: flex; gap: 8px; margin-top: 12px; }
+.order-actions .btn { flex: 1; }
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+    grid-column: 1 / -1;
+}
+.empty-state .icon { font-size: 64px; margin-bottom: 12px; opacity: 0.5; }
+
+/* TABLE */
+.table-wrap {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 4px;
+    border: 1px solid #e8ecf0;
+}
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13.5px;
+}
+.table th {
+    background: #f8fafc;
+    font-weight: 700;
+    color: #475569;
+    font-size: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.points-badge {
+    display: inline-block;
+    background: #fef3c7;
+    color: #d97706;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* MODAL */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+    background: #fff;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 520px;
+}
+.modal-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e8ecf0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-head h3 { font-size: 17px; font-weight: 700; }
+.modal-body { padding: 20px 24px; }
+.modal-foot {
+    padding: 16px 24px;
+    border-top: 1px solid #e8ecf0;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+.form-group { margin-bottom: 16px; }
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+.form-textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    min-height: 70px;
+}
+.form-textarea:focus { border-color: #f97316; }
+
+/* TOAST */
+.toast-container {
+    position: fixed;
+    top: 90px;
+    right: 26px;
+    z-index: 1100;
+}
+.toast {
+    background: #1e293b;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    min-width: 260px;
+    margin-bottom: 10px;
+}
+.toast.success { background: linear-gradient(135deg, #008543, #00b35c); }
+.toast.error { background: linear-gradient(135deg, #ef4444, #f87171); }
+.toast.info { background: linear-gradient(135deg, #f97316, #ea580c); }
+
+@media (max-width: 768px) {
+    .header-container { flex-wrap: wrap; }
+    .orders-grid { grid-template-columns: 1fr; }
+    .toast-container { right: 12px; left: 12px; }
+    .toast { min-width: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="header-wrapper">
+    <div class="container header-container">
+        <a href="index.html" class="navbar-brand">
+            <span>BeePi</span>Mart <span class="shipper-badge">SHIPPER</span>
+        </a>
+        <div class="header-actions">
+            <span class="user-info">Xin chào, <b id="shipper-name">Shipper</b></span>
+            <button class="btn btn-danger" onclick="logout()">Thoát</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon orange">Đơn</div>
+            <div>
+                <div class="stat-value" id="stat-available">0</div>
+                <div class="stat-label">Đơn cần giao</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue">Giao</div>
+            <div>
+                <div class="stat-value" id="stat-delivering">0</div>
+                <div class="stat-label">Đang giao</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">Xong</div>
+            <div>
+                <div class="stat-value" id="stat-completed">0</div>
+                <div class="stat-label">Đã giao</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">Điểm</div>
+            <div>
+                <div class="stat-value" id="stat-points">0</div>
+                <div class="stat-label">Điểm tích lũy</div>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav-tabs">
+        <li><button class="nav-link active" onclick="switchTab('tab-available', this); loadAvailable();">Đơn Cần Nhận</button></li>
+        <li><button class="nav-link" onclick="switchTab('tab-delivering', this); loadMyDeliveries();">Đang Giao</button></li>
+        <li><button class="nav-link" onclick="switchTab('tab-history', this); loadHistory();">Lịch Sử Giao</button></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab-available">
+            <div class="orders-grid" id="available-orders">
+                <div class="empty-state">
+                    <div class="icon">Đang tải...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tab-delivering">
+            <div class="orders-grid" id="my-deliveries">
+                <div class="empty-state">
+                    <div class="icon">Đang tải...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tab-history">
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Ngày giao</th>
+                            <th>Tổng tiền</th>
+                            <th>Địa chỉ</th>
+                            <th>Điểm</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL XÁC NHẬN GIAO HÀNG -->
+<div class="modal-overlay" id="deliver-modal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3>Xác Nhận Đã Giao Hàng</h3>
+            <button style="background:none;border:none;font-size:18px;cursor:pointer;" onclick="closeDeliverModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="deliver-order-id">
+            <div class="form-group">
+                <label class="form-label">Ghi chú (tùy chọn)</label>
+                <textarea class="form-textarea" id="deliver-notes" placeholder="Ví dụ: Khách đã nhận hàng và thanh toán đủ"></textarea>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;font-size:13px;color:#166534;">
+                Sau khi xác nhận, bạn sẽ nhận được 10 điểm tích lũy.
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button class="btn" style="background:#f1f5f9;color:#475569;" onclick="closeDeliverModal()">Hủy</button>
+            <button class="btn btn-success" onclick="confirmDeliver()">Xác Nhận</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const API_URL = '/api';
+const token = localStorage.getItem('token');
+const role = localStorage.getItem('role');
+const username = localStorage.getItem('username');
+
+if (!token || role !== 'shipper') {
+    alert('Bạn cần đăng nhập với tài khoản shipper');
+    window.location.href = 'login.html';
+}
+
+document.getElementById('shipper-name').textContent = username || 'Shipper';
+
+let shipperInfo = null;
+
+function toast(msg, type = 'success') {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+function authHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    };
+}
+
+function fmtMoney(n) { return Number(n || 0).toLocaleString('vi-VN') + ' đ'; }
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+}
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+function parseAddr(raw) {
+    if (!raw) return { name: '', phone: '', address: '' };
+    const p = raw.split(' - ');
+    if (p.length >= 3) {
+        return { name: p[0], phone: p[1], address: p.slice(2).join(' - ') };
+    }
+    return { name: '', phone: '', address: raw };
+}
+
+async function loadShipperInfo() {
+    try {
+        const res = await fetch(`${API_URL}/shipper/me`, { headers: authHeaders() });
+        const json = await res.json();
+        shipperInfo = json.data || json;
+        document.getElementById('stat-points').textContent = shipperInfo.total_points || 0;
+        document.getElementById('stat-completed').textContent = shipperInfo.total_deliveries || 0;
+        document.getElementById('shipper-name').textContent = shipperInfo.full_name || username;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function loadAvailable() {
+    const container = document.getElementById('available-orders');
+    try {
+        const res = await fetch(`${API_URL}/shipper/available-orders`, { headers: authHeaders() });
+        const json = await res.json();
+        const orders = json.data || json;
+        document.getElementById('stat-available').textContent = orders.length;
+
+        if (!orders || orders.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">Không có đơn</div><p>Hiện không có đơn nào cần giao</p></div>`;
+            return;
+        }
+        container.innerHTML = orders.map(o => renderOrderCard(o, 'available')).join('');
+    } catch (e) {
+        container.innerHTML = `<div class="empty-state"><p>Lỗi tải đơn</p></div>`;
+    }
+}
+
+async function loadMyDeliveries() {
+    const container = document.getElementById('my-deliveries');
+    try {
+        const res = await fetch(`${API_URL}/shipper/my-deliveries`, { headers: authHeaders() });
+        const json = await res.json();
+        const orders = json.data || json;
+        document.getElementById('stat-delivering').textContent = orders.length;
+
+        if (!orders || orders.length === 0) {
+            container.innerHTML = `<div class="empty-state"><div class="icon">Chưa có</div><p>Bạn chưa nhận đơn nào</p></div>`;
+            return;
+        }
+        container.innerHTML = orders.map(o => renderOrderCard(o, 'delivering')).join('');
+    } catch (e) {
+        container.innerHTML = `<div class="empty-state"><p>Lỗi tải đơn</p></div>`;
+    }
+}
+
+function renderOrderCard(o, mode) {
+    const info = parseAddr(o.shipping_address);
+    const itemsHtml = (o.items || []).map(it =>
+        `<div>${it.name} x <b>${it.quantity}</b></div>`
+    ).join('');
+
+    const fragile = o.is_fragile ? '<span class="tag-fragile">Hàng dễ vỡ</span>' : '';
+    const paidTag = o.is_paid
+        ? '<span class="tag-paid">Đã thanh toán</span>'
+        : '<span class="tag-unpaid">Chưa thanh toán</span>';
+
+    const paymentLabel = {
+        'COD': 'COD - Trả tiền mặt',
+        'BANK': 'Chuyển khoản',
+        'WALLET': 'Ví điện tử'
+    }[o.payment_method] || o.payment_method;
+
+    const actionBtn = mode === 'available'
+        ? `<button class="btn btn-orange btn-lg" onclick="acceptOrder(${o.id})">Nhận Đơn Này</button>`
+        : `<button class="btn btn-success btn-lg" onclick="openDeliverModal(${o.id})">Đã Giao Hàng</button>`;
+
+    return `
+        <div class="order-card ${o.is_fragile ? 'fragile' : ''}">
+            <div class="order-header">
+                <div>
+                    <div class="order-id">#${o.id}</div>
+                    <div class="order-time">${new Date(o.created_at).toLocaleString('vi-VN')}</div>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    ${fragile}${paidTag}
+                </div>
+            </div>
+            <div class="order-info-line">
+                <span class="order-info-icon">Khách</span>
+                <span class="order-info-text"><b>${info.name || 'Khách hàng'}</b></span>
+            </div>
+            <div class="order-info-line">
+                <span class="order-info-icon">SĐT</span>
+                <span class="order-info-text"><b>${info.phone || '—'}</b></span>
+            </div>
+            <div class="order-info-line">
+                <span class="order-info-icon">Địa chỉ</span>
+                <span class="order-info-text">${info.address || '—'}</span>
+            </div>
+            <div class="order-info-line">
+                <span class="order-info-icon">Thanh toán</span>
+                <span class="order-info-text">${paymentLabel}</span>
+            </div>
+            ${o.notes ? `<div class="order-info-line"><span class="order-info-icon">Ghi chú</span><span class="order-info-text"><i>${o.notes}</i></span></div>` : ''}
+            <div class="order-items">${itemsHtml}</div>
+            <div class="order-total">
+                <span class="order-total-label">Tổng tiền:</span>
+                <span class="order-total-value">${fmtMoney(o.total_amount)}</span>
+            </div>
+            <div class="order-actions">${actionBtn}</div>
+        </div>
+    `;
+}
+
+async function acceptOrder(orderId) {
+    if (!confirm(`Nhận đơn #${orderId}?`)) return;
+    try {
+        const res = await fetch(`${API_URL}/shipper/accept-order/${orderId}`, {
+            method: 'POST',
+            headers: authHeaders()
+        });
+        const json = await res.json();
+        if (!res.ok) {
+            toast(json.error || 'Lỗi', 'error');
+            return;
+        }
+        toast('Nhận đơn thành công');
+        loadAvailable();
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    }
+}
+
+function openDeliverModal(orderId) {
+    document.getElementById('deliver-order-id').value = orderId;
+    document.getElementById('deliver-notes').value = '';
+    document.getElementById('deliver-modal').classList.add('open');
+}
+
+function closeDeliverModal() {
+    document.getElementById('deliver-modal').classList.remove('open');
+}
+
+async function confirmDeliver() {
+    const orderId = document.getElementById('deliver-order-id').value;
+    const notes = document.getElementById('deliver-notes').value.trim();
+
+    try {
+        const res = await fetch(`${API_URL}/shipper/complete-delivery/${orderId}`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({ notes })
+        });
+        const json = await res.json();
+        if (!res.ok) {
+            toast(json.error || 'Lỗi', 'error');
+            return;
+        }
+        toast('Giao hàng thành công! Nhận 10 điểm');
+        closeDeliverModal();
+        loadMyDeliveries();
+        loadShipperInfo();
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    }
+}
+
+async function loadHistory() {
+    const tbody = document.getElementById('history-body');
+    try {
+        const res = await fetch(`${API_URL}/shipper/history`, { headers: authHeaders() });
+        const json = await res.json();
+        const list = json.data || json;
+
+        if (!list || list.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;">Chưa có lịch sử</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = list.map(h => {
+            const info = parseAddr(h.shipping_address);
+            return `
+                <tr>
+                    <td><b>#${h.order_id}</b></td>
+                    <td style="white-space:nowrap;">${new Date(h.delivered_at).toLocaleString('vi-VN')}</td>
+                    <td style="color:#ee4d2d;font-weight:700;">${fmtMoney(h.total_amount)}</td>
+                    <td>${info.address || '—'}</td>
+                    <td><span class="points-badge">+${h.points_earned} điểm</span></td>
+                    <td style="color:#64748b;font-size:12.5px;">${h.notes || '—'}</td>
+                </tr>
+            `;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:#ef4444;">Lỗi tải</td></tr>`;
+    }
+}
+
+window.onload = function () {
+    loadShipperInfo();
+    loadAvailable();
+};
+</script>
+</body>
+</html>

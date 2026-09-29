@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi Tiết Sản Phẩm - BeePiMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f8fa;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #2c3e50;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* HEADER */
+.header-wrapper {
+    background: linear-gradient(135deg, #008543 0%, #00b35c 100%);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+.navbar-brand {
+    font-size: 25px;
+    font-weight: 800;
+    text-decoration: none;
+    color: white;
+}
+.navbar-brand span { color: #FFB800; }
+
+.btn {
+    padding: 9px 20px;
+    border-radius: 22px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.2s;
+}
+.btn-success { background: #008543; color: #fff; }
+.btn-success:hover { background: #006b36; }
+.btn-light { background: rgba(255, 255, 255, 0.2); color: #fff; border: 2px solid rgba(255, 255, 255, 0.4); }
+.btn-light:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* BREADCRUMB */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 16px;
+    font-size: 14px;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+.breadcrumb a {
+    color: #008543;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* PRODUCT LAYOUT */
+.product-main {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e8ecf0;
+    padding: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+@media (max-width: 768px) {
+    .product-main { grid-template-columns: 1fr; gap: 24px; padding: 20px; }
+}
+
+.product-image-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f1f5f9;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.product-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+}
+.placeholder { font-size: 120px; opacity: 0.4; }
+
+.product-info { display: flex; flex-direction: column; }
+
+.product-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f9f4;
+    color: #008543;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    align-self: flex-start;
+}
+
+.product-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.3;
+    margin-bottom: 12px;
+}
+
+.product-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+.product-stats .rating { color: #FFB800; font-weight: 700; }
+
+.product-price-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 18px;
+}
+
+.product-price { font-size: 32px; font-weight: 800; color: #ee4d2d; }
+
+.product-stock {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+.stock-ok { background: #f0fdf4; color: #16a34a; }
+.stock-low { background: #fff7e6; color: #d46b08; }
+.stock-out { background: #fef2f2; color: #dc2626; }
+
+.tag-fragile {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #fecaca;
+}
+
+.product-description {
+    color: #475569;
+    line-height: 1.7;
+    margin-bottom: 22px;
+    font-size: 14.5px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.quantity-selector label {
+    font-weight: 600;
+    color: #475569;
+    font-size: 14px;
+}
+
+.qty-wrap {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.qty-btn {
+    width: 38px;
+    height: 38px;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    color: #475569;
+}
+.qty-btn:hover { background: #e2e8f0; }
+
+.qty-input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    outline: none;
+    font-family: inherit;
+}
+
+.btn-lg {
+    padding: 14px 24px;
+    font-size: 15px;
+    border-radius: 12px;
+    flex: 1;
+}
+
+/* RELATED */
+.related-section { margin-bottom: 40px; }
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 16px;
+}
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.related-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e8ecf0;
+    padding: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+}
+.related-card:hover {
+    border-color: #FFB800;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(255, 184, 0, 0.18);
+}
+
+.related-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f1f5f9;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #cbd5e1;
+}
+.related-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+}
+
+.related-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+    height: 38px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.related-price {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ee4d2d;
+}
+
+/* LOADING */
+.loading { text-align: center; padding: 100px 20px; color: #94a3b8; }
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f1f5f9;
+    border-top-color: #008543;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+.toast-container {
+    position: fixed;
+    top: 90px;
+    right: 26px;
+    z-index: 1100;
+}
+.toast {
+    background: #1e293b;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    min-width: 260px;
+    margin-bottom: 10px;
+}
+.toast.success { background: linear-gradient(135deg, #008543, #00b35c); }
+.toast.error { background: linear-gradient(135deg, #ef4444, #f87171); }
+</style>
+</head>
+<body>
+
+<div class="header-wrapper">
+    <div class="container header-container">
+        <a href="index.html" class="navbar-brand"><span>BeePi</span>Mart</a>
+        <a href="index.html" class="btn btn-light">Về Cửa Hàng</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Trang chủ</a>
+        <span>/</span>
+        <span id="bc-cat">Danh mục</span>
+        <span>/</span>
+        <span id="bc-prod">Chi tiết sản phẩm</span>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Đang tải thông tin sản phẩm...</p>
+    </div>
+
+    <div id="error" style="display:none; text-align:center; padding:80px 20px;">
+        <div style="font-size:64px; opacity:.5; margin-bottom:16px;">Không tìm thấy</div>
+        <h2 style="font-size:20px; color:#1e293b; margin-bottom:8px;">Sản phẩm không tồn tại</h2>
+        <p id="error-msg" style="color:#64748b; margin-bottom:20px;"></p>
+        <a href="index.html" class="btn btn-success">Về trang chủ</a>
+    </div>
+
+    <div id="content" style="display:none;">
+        <div class="product-main">
+            <div class="product-image-wrap">
+                <span class="placeholder">🛍️</span>
+                <img id="p-image" src="" alt="" onerror="this.style.display='none'">
+            </div>
+
+            <div class="product-info">
+                <span class="product-category" id="p-category">Danh mục</span>
+                <h1 class="product-name" id="p-name">—</h1>
+
+                <div class="product-stats">
+                    <span class="rating">Đánh giá 4.8/5</span>
+                    <span id="p-stock-text">Kho: —</span>
+                    <span id="p-fragile-tag"></span>
+                </div>
+
+                <div class="product-price-row">
+                    <span class="product-price" id="p-price">0 đ</span>
+                    <span class="product-stock" id="p-stock-badge">—</span>
+                </div>
+
+                <p class="product-description" id="p-description"></p>
+
+                <div class="quantity-selector">
+                    <label>Số lượng:</label>
+                    <div class="qty-wrap">
+                        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                        <input type="number" class="qty-input" id="p-qty" value="1" min="1">
+                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; margin-top:auto;">
+                    <button class="btn btn-success btn-lg" onclick="addToCartFromDetail()" id="btn-add">
+                        Thêm Vào Giỏ Hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="related-section" id="related-section" style="display:none;">
+            <h2 class="section-title">Sản Phẩm Liên Quan</h2>
+            <div class="related-grid" id="related-grid"></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const API_URL = '/api';
+let product = null;
+let currentQty = 1;
+
+function toast(msg, type = 'success') {
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+function fmtMoney(n) { return Number(n || 0).toLocaleString('vi-VN') + ' đ'; }
+
+async function loadProduct() {
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) { showError('Không có mã sản phẩm'); return; }
+
+    try {
+        const res = await fetch(`${API_URL}/products/${id}/detail`);
+        if (res.status === 404) { showError('Sản phẩm không tồn tại'); return; }
+        if (!res.ok) { showError('Lỗi tải sản phẩm'); return; }
+
+        const json = await res.json();
+        product = json.data || json;
+        render(product);
+    } catch (e) {
+        console.error(e);
+        showError('Lỗi kết nối máy chủ');
+    }
+}
+
+function showError(msg) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error-msg').textContent = msg;
+}
+
+function render(p) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.title = p.name + ' - BeePiMart';
+
+    document.getElementById('bc-cat').textContent = p.category_name || 'Sản phẩm';
+    document.getElementById('bc-prod').textContent = p.name;
+
+    document.getElementById('p-category').innerHTML = `${p.category_icon || ''} ${p.category_name || 'Sản phẩm'}`;
+    document.getElementById('p-name').textContent = p.name;
+    document.getElementById('p-price').textContent = fmtMoney(p.price);
+    document.getElementById('p-description').textContent = p.description || 'Sản phẩm chất lượng cao tại BeePiMart';
+    document.getElementById('p-stock-text').textContent = `Kho: ${p.stock}`;
+
+    if (p.is_fragile) {
+        document.getElementById('p-fragile-tag').innerHTML = '<span class="tag-fragile">Hàng dễ vỡ</span>';
+    }
+
+    if (p.image_url) {
+        document.getElementById('p-image').src = p.image_url;
+    }
+
+    const badge = document.getElementById('p-stock-badge');
+    const btnAdd = document.getElementById('btn-add');
+    const qtyInput = document.getElementById('p-qty');
+    qtyInput.max = p.stock;
+
+    if (p.stock <= 0) {
+        badge.textContent = 'Hết hàng';
+        badge.className = 'product-stock stock-out';
+        btnAdd.disabled = true;
+        btnAdd.textContent = 'Hết Hàng';
+        btnAdd.style.background = '#cbd5e1';
+    } else if (p.stock < 10) {
+        badge.textContent = `Sắp hết (còn ${p.stock})`;
+        badge.className = 'product-stock stock-low';
+    } else {
+        badge.textContent = 'Còn hàng';
+        badge.className = 'product-stock stock-ok';
+    }
+
+    if (p.related && p.related.length > 0) {
+        document.getElementById('related-section').style.display = 'block';
+        document.getElementById('related-grid').innerHTML = p.related.map(r => `
+            <a href="product-detail.html?id=${r.id}" class="related-card">
+                <div class="related-img">
+                    ${r.image_url ? `<img src="${r.image_url}" onerror="this.style.display='none'">` : '🛍️'}
+                </div>
+                <div class="related-title">${r.name}</div>
+                <div class="related-price">${fmtMoney(r.price)}</div>
+            </a>
+        `).join('');
+    }
+}
+
+function changeQty(delta) {
+    if (!product) return;
+    currentQty += delta;
+    if (currentQty < 1) currentQty = 1;
+    if (currentQty > product.stock) currentQty = product.stock;
+    document.getElementById('p-qty').value = currentQty;
+}
+
+function addToCartFromDetail() {
+    if (!product || product.stock <= 0) return;
+
+    const cart = JSON.parse(sessionStorage.getItem('pendingCart') || '[]');
+    const exist = cart.find(i => i.product_id === product.id);
+
+    if (exist) {
+        exist.quantity = Math.min(exist.quantity + currentQty, product.stock);
+    } else {
+        cart.push({
+            product_id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image_url: product.image_url || null,
+            quantity: currentQty,
+            stock: product.stock
+        });
+    }
+
+    sessionStorage.setItem('pendingCart', JSON.stringify(cart));
+    toast(`Đã thêm ${currentQty} sản phẩm vào giỏ`);
+    setTimeout(() => window.location.href = 'index.html', 900);
+}
+
+window.onload = loadProduct;
+</script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theo Dõi Đơn Hàng - BeePiMart</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #f7f8fa;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #2c3e50;
+    font-size: 15px;
+}
+
+.container { width: 100%; max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+.header-wrapper {
+    background: linear-gradient(135deg, #008543, #00b35c);
+    padding: 14px 0;
+}
+.header-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar-brand {
+    font-size: 25px;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+}
+.navbar-brand span { color: #FFB800; }
+
+.btn {
+    padding: 9px 20px;
+    border-radius: 22px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    display: inline-block;
+}
+.btn-outline { background: #fff; color: #008543; border: 2px solid #008543; }
+.btn-light { background: rgba(255, 255, 255, 0.2); color: #fff; border: 2px solid rgba(255, 255, 255, 0.4); }
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 22px 0 16px;
+    font-size: 14px;
+    color: #64748b;
+}
+.breadcrumb a { color: #008543; text-decoration: none; font-weight: 600; }
+
+.card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 26px;
+    border: 1px solid #e8ecf0;
+    margin-bottom: 20px;
+}
+.card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f4f8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-summary {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.order-summary-item {
+    flex: 1;
+    min-width: 150px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #f1f5f9;
+}
+.order-summary-item .lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.order-summary-item .val {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.badge {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.tag-fragile {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 8px;
+}
+
+/* TIMELINE */
+.timeline { padding: 10px 0 10px 20px; }
+
+.timeline-item {
+    position: relative;
+    padding: 0 0 30px 40px;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 42px;
+    bottom: 0;
+    width: 2px;
+    background: #e2e8f0;
+}
+.timeline-item:last-child::before { display: none; }
+.timeline-item.completed::before { background: #008543; }
+
+.timeline-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    z-index: 2;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.timeline-item.completed .timeline-icon {
+    background: linear-gradient(135deg, #008543, #00b35c);
+    color: #fff;
+}
+.timeline-item.current .timeline-icon {
+    background: linear-gradient(135deg, #FFB800, #ff9500);
+    color: #fff;
+    animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.timeline-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+.timeline-item.completed .timeline-label { color: #1e293b; }
+.timeline-item.current .timeline-label { color: #d46b08; }
+
+.timeline-desc {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+.timeline-time {
+    font-size: 12px;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+.timeline-item.completed .timeline-time { color: #64748b; }
+
+/* ADDRESS */
+.address-box {
+    background: linear-gradient(135deg, #f0f9f4, #dcfce7);
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+.address-icon {
+    width: 42px;
+    height: 42px;
+    background: #008543;
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+.address-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.address-detail {
+    font-size: 13.5px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.shipper-box {
+    background: linear-gradient(135deg, #fff7ed, #ffedd5);
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-top: 12px;
+}
+.shipper-icon {
+    width: 42px;
+    height: 42px;
+    background: #f97316;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: #94a3b8;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f1f5f9;
+    border-top-color: #008543;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header-wrapper">
+    <div class="header-container">
+        <a href="index.html" class="navbar-brand"><span>BeePi</span>Mart</a>
+        <a href="profile.html" class="btn btn-light">Về Tài Khoản</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="index.html">Trang chủ</a>
+        <span>/</span>
+        <a href="profile.html">Tài khoản</a>
+        <span>/</span>
+        <span>Theo dõi đơn hàng #<span id="bc-id">—</span></span>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Đang tải tiến độ...</p>
+    </div>
+
+    <div id="error" style="display:none; text-align:center; padding:80px 20px;">
+        <h2 style="font-size:20px; color:#1e293b; margin-bottom:12px;">Không tìm thấy đơn hàng</h2>
+        <p id="error-msg" style="color:#64748b; margin-bottom:20px;"></p>
+        <a href="profile.html" class="btn btn-outline">Về tài khoản</a>
+    </div>
+
+    <div id="content" style="display:none;">
+        <div class="card">
+            <div class="card-title">
+                Đơn hàng #<span id="order-id">—</span>
+                <span id="fragile-tag"></span>
+            </div>
+
+            <div class="order-summary">
+                <div class="order-summary-item">
+                    <div class="lbl">Trạng thái</div>
+                    <div class="val"><span class="badge" id="order-status">—</span></div>
+                </div>
+                <div class="order-summary-item">
+                    <div class="lbl">Ngày đặt</div>
+                    <div class="val" id="order-date" style="font-size:13px;">—</div>
+                </div>
+                <div class="order-summary-item">
+                    <div class="lbl">Tổng tiền</div>
+                    <div class="val" id="order-total" style="color:#ee4d2d;">—</div>
+                </div>
+            </div>
+
+            <div class="address-box">
+                <div class="address-icon">Vị trí</div>
+                <div>
+                    <div class="address-name" id="address-name">—</div>
+                    <div class="address-detail" id="address-detail">—</div>
+                </div>
+            </div>
+
+            <div class="shipper-box" id="shipper-box" style="display:none;">
+                <div class="shipper-icon">Shipper</div>
+                <div>
+                    <div class="address-name" id="shipper-name">Shipper</div>
+                    <div class="address-detail">SĐT: <span id="shipper-phone">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Tiến Độ Giao Hàng</div>
+            <div class="timeline" id="timeline"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_URL = '/api';
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'login.html';
+
+function fmtMoney(n) { return Number(n || 0).toLocaleString('vi-VN') + ' đ'; }
+
+function parseAddr(raw) {
+    if (!raw) return { name: '', phone: '', address: '' };
+    const p = raw.split(' - ');
+    if (p.length >= 3) {
+        return { name: p[0], phone: p[1], address: p.slice(2).join(' - ') };
+    }
+    return { name: '', phone: '', address: raw };
+}
+
+async function loadTracking() {
+    const id = new URLSearchParams(location.search).get('id');
+    if (!id) return showError('Không có mã đơn hàng');
+
+    document.getElementById('bc-id').textContent = id;
+
+    try {
+        const res = await fetch(`${API_URL}/orders/${id}/tracking`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.status === 404) return showError('Đơn hàng không tồn tại');
+        if (res.status === 403) return showError('Không có quyền xem đơn này');
+        if (!res.ok) return showError('Lỗi tải thông tin');
+
+        const json = await res.json();
+        render(json.data || json);
+    } catch (e) {
+        showError('Lỗi kết nối máy chủ');
+    }
+}
+
+function showError(msg) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('error-msg').textContent = msg;
+}
+
+function render(data) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+    const { order, timeline } = data;
+
+    document.getElementById('order-id').textContent = order.id;
+    document.getElementById('order-date').textContent = new Date(order.created_at).toLocaleString('vi-VN');
+    document.getElementById('order-total').textContent = fmtMoney(order.total_amount);
+
+    const colors = {
+        'Chờ xử lý': 'background:#fff7e6;color:#d46b08;',
+        'Đã xác nhận': 'background:#e0f2fe;color:#0369a1;',
+        'Chờ lấy hàng': 'background:#ede9fe;color:#7c3aed;',
+        'Đang giao': 'background:#e6f7ff;color:#096dd9;',
+        'Hoàn thành': 'background:#f0fdf4;color:#16a34a;',
+        'Đã hủy': 'background:#fef2f2;color:#dc2626;'
+    };
+
+    const sb = document.getElementById('order-status');
+    sb.style.cssText = colors[order.status] || 'background:#f1f5f9;color:#64748b;';
+    sb.textContent = order.status;
+
+    if (order.is_fragile) {
+        document.getElementById('fragile-tag').innerHTML = '<span class="tag-fragile">Hàng dễ vỡ</span>';
+    }
+
+    const info = parseAddr(order.shipping_address);
+    document.getElementById('address-name').textContent =
+        info.name + (info.phone ? ' - ' + info.phone : '');
+    document.getElementById('address-detail').textContent = info.address || '—';
+
+    if (order.shipper_name) {
+        document.getElementById('shipper-box').style.display = 'flex';
+        document.getElementById('shipper-name').textContent = order.shipper_name;
+        document.getElementById('shipper-phone').textContent = order.shipper_phone || '—';
+    }
+
+    document.getElementById('timeline').innerHTML = timeline.map(step => {
+        const cls = step.completed ? (step.current ? 'completed current' : 'completed') : '';
+        const timeStr = step.timestamp
+            ? new Date(step.timestamp).toLocaleString('vi-VN')
+            : 'Chưa diễn ra';
+
+        return `
+            <div class="timeline-item ${cls}">
+                <div class="timeline-icon">${step.icon}</div>
+                <div>
+                    <div class="timeline-label">${step.label}</div>
+                    <div class="timeline-desc">${step.desc}</div>
+                    <div class="timeline-time">${timeStr}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+window.onload = loadTracking;
+</script>
+</body>
+</html>
